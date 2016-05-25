@@ -1,0 +1,22 @@
+{
+    "name": "xinc/monitor",
+    "type": "library",
+    "description": "Monitor file changes",
+    "homepage": "http://github.com/xinc-develop/xinc-monitor",
+    "license": "MIT",
+    "authors": [
+        {"name": "Sebastian Knapp","email": "news@young-workers.de"}
+    ],
+    "require": {
+        "php": ">=5.4.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.8.*",
+        "fabpot/php-cs-fixer": "~1.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Xinc\\Monitor\\": "Classes"
+        }
+    }
+}

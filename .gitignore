@@ -1,0 +1,9 @@
+composer.phar
+vendor/
+composer
+composer.lock
+*~
+*#*#
+*#*
+phpunit
+tests/data/1.txt
