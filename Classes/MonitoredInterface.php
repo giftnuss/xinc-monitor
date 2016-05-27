@@ -22,43 +22,17 @@
  */
 namespace Xinc\Monitor;
 
-use Xinc\Monitor\MonitoredInterface as Monitored;
-
-class Monitor implements Monitored
+interface MonitoredInterface
 {
     /**
-     * holds the monitored items
+     * Check a monitored item.
+     * @returns boolean - is it changed
      */
-    protected $monitored;
+    public function check();
 
     /**
-     * boolean - the current change status
+     * Return the current change status
+     * @returns boolean - is it changend
      */
-    protected $isChanged;
-
-    public function __construct()
-    {
-        $this->monitored = array();
-    }
-
-    public function monitor(Monitored $item)
-    {
-        $this->monitored[] = $item;
-    }
-
-    public function check()
-    {
-        $this->isChanged = false;
-        foreach($this->monitored as $item) {
-            if($item->check()) {
-                $this->isChanged = true;
-            }
-        }
-        return $this->isChanged;
-    }
-
-    public function isChanged()
-    {
-        return $this->isChanged;
-    }
+    public function isChanged();
 }

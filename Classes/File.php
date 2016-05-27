@@ -22,7 +22,9 @@
  */
 namespace Xinc\Monitor;
 
-class File
+use Xinc\Monitor\MonitoredInterface as Monitored;
+
+class File implements Monitored
 {
     protected $path;
     private $exists;
