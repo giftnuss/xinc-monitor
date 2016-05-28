@@ -50,7 +50,7 @@ class File implements Monitored
             $this->path = $path;
             return $this;
         }
-        throw new Xinc\Monitor\Exception("Path attribute is not changeable.");
+        throw new \Xinc\Monitor\Exception("Path attribute is not changeable.");
     }
 
     public function initialize()
@@ -63,7 +63,7 @@ class File implements Monitored
         else {
             $stat = stat($this->getPath());
             if($stat === false) {
-                throw new Xinc\Monitor\Exception(
+                throw new \Xinc\Monitor\Exception(
                     "Problem stat '{$this->getPath()}'.");
             }
             $this->exists = true;
