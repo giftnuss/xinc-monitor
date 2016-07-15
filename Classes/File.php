@@ -29,6 +29,7 @@ class File implements Monitored
     protected $path;
     private $exists;
     private $mtime;
+    private $size;
     protected $isChanged;
 
     public function __construct($path = null)
@@ -59,6 +60,7 @@ class File implements Monitored
         if(file_exists($this->getPath()) === FALSE) {
             $this->exists = false;
             $this->mtime = null;
+            $this->size = null;
         }
         else {
             $stat = stat($this->getPath());
@@ -68,6 +70,7 @@ class File implements Monitored
             }
             $this->exists = true;
             $this->mtime = $stat['mtime'];
+            $this->size = $stat['size'];
         }
     }
 
@@ -90,9 +93,11 @@ class File implements Monitored
             throw new Xinc\Monitor\Exception(
                 "Problem stat '{$this->getPath()}'.");
         }
-        if($this->mtime != $stat['mtime']) {
+        if($this->mtime != $stat['mtime'] ||
+           $this->size != $stat['size']) {
             $this->isChanged = true;
             $this->mtime = $stat['mtime'];
+            $this->size = $stat['size'];
         }
         else {
             $this->isChanged = false;

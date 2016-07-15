@@ -25,6 +25,9 @@ namespace Xinc\Monitor;
 
 use Xinc\Monitor\MonitoredInterface as Monitored;
 
+/**
+ * Checks multiple monitored items.
+ */
 class Monitor implements Monitored
 {
     /**

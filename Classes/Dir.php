@@ -23,7 +23,7 @@
 namespace Xinc\Monitor;
 
 
-use Xinc\Monitor\Directory\RecursiveIterator as Filter;
+use Xinc\Monitor\Directory\FilterIterator as Filter;
 use Xinc\Monitor\MonitoredInterface as Monitored;
 
 class Dir implements Monitored
@@ -62,9 +62,7 @@ class Dir implements Monitored
 
     public function getIterator()
     {
-        $i = new Filter(new \RecursiveDirectoryIterator($this->getPath()));
-        $i = new \RecursiveIteratorIterator( $i );
-        // PHP5.4 oddity ??? - foreach works without, but valid is false?
+        $i = new Filter(new \DirectoryIterator($this->getPath()));
         $i->rewind();
         return $i;
     }
@@ -76,34 +74,48 @@ class Dir implements Monitored
         $iter = $this->getIterator();
 
         while($iter->valid()) {
-            if($iter->isFile()) {
-                $this->ls[$iter->getSubPathname()] = $iter->current()->getMTime();
-            }
+            $this->setupEntry($iter);
             $iter->next();
         }
     }
 
+    protected function setupEntry($iter)
+    {
+        if($iter->isFile()) {
+            $this->ls[$iter->getPathname()] = new File($iter->getPathname());
+        }
+        elseif($iter->isDir()) {
+            $this->ls[$iter->getPathname()] = new Dir($iter->getPathname());
+        }
+    }
+
     /**
-     * @returns boolean Is file changed
+     * @returns boolean Is directory changed
      */
     public function check()
     {
+        $this->isChanged = false;
         $check = array();
         $iter = $this->getIterator();
         while($iter->valid()) {
-            if($iter->isFile()) {
-                $check[$iter->getSubPathname()] = $iter->current()->getMTime();
+            $check[] = $iter->getPathname();
+            if(isset($this->ls[$iter->getPathname()])) {
+                if($this->ls[$iter->getPathname()]->check()) {
+                    $this->isChanged = true;
+                }
+            }
+            else {
+                $this->setupEntry($iter);
+                $this->isChanged = true;
             }
             $iter->next();
         }
-        $new = array_diff_assoc($check,$this->ls);
-        $changed = array_diff_assoc($this->ls,$check);
-
-        if(count($new) > 0 || count($changed) > 0) {
+        $deleted = array_diff(array_keys($this->ls),$check);
+        if(count($deleted) > 0) {
             $this->isChanged = true;
-        }
-        else {
-            $this->isChanged = false;
+            foreach($deleted as $entry) {
+                unset($this->ls[$entry]);
+            }
         }
         return $this->isChanged;
     }

@@ -11,6 +11,29 @@ use Xinc\Monitor\File;
  */
 class FileTest extends \PHPUnit_Framework_TestCase
 {
+    protected $files;
+
+    protected function setUp()
+    {
+        $this->files = array();
+    }
+
+    protected function tearDown()
+    {
+        foreach($this->files as $file) {
+            if(unlink($file) === FALSE) {
+                throw new \Exception("Failure removing temporary file $file.");
+            }
+        }
+    }
+
+    protected function getTempfile()
+    {
+        $tempfile = tempnam(__DIR__ . '/data','tempfile-');
+        $this->files[] = $tempfile;
+        return $tempfile;
+    }
+
     public function testNotExists()
     {
         $notexists = new File('XXX-unknown.txt');
@@ -79,6 +102,21 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($low->exists());
         $this->assertFalse($low->isChanged());
         $this->assertNotNull($low->modificationTime());
-        $low->check();$this->assertFalse($low->isChanged());
+        clearstatcache();
+        $low->check();
+        $this->assertFalse($low->isChanged());
+    }
+
+    public function testCheckChanged()
+    {
+        $low = new File($this->getTempfile());
+        $this->assertTrue($low->exists());
+        $this->assertFalse($low->isChanged());
+        $this->assertNotNull($low->modificationTime());
+        file_put_contents($low->getPath(),'bla');
+        clearstatcache();
+        $low->check();
+        $this->assertTrue($low->isChanged());
+
     }
 }
