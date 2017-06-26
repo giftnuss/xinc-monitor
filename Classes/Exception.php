@@ -20,12 +20,12 @@
  *          OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *          SOFTWARE.
  */
+
 namespace Xinc\Monitor;
 
 /**
- * TODO: should extend Xinc\Core\Exception
+ * TODO: should extend Xinc\Core\Exception.
  */
 class Exception extends \Exception
 {
-
 }

@@ -20,15 +20,17 @@
  *          OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *          SOFTWARE.
  */
+
 namespace Xinc\Monitor\Directory;
 
 class FilterIterator extends \FilterIterator
 {
     public function accept()
     {
-        if($this->isDot()) {
+        if ($this->isDot()) {
             return false;
         }
+
         return true;
     }
 }

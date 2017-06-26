@@ -20,13 +20,14 @@
  *          OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *          SOFTWARE.
  */
+
 namespace Xinc\Monitor\Directory;
 
 class RecursiveIterator extends \RecursiveFilterIterator
 {
     public function accept()
     {
-        #echo $this->getSubPathname(),"\n";
+        //echo $this->getSubPathname(),"\n";
         return true;
     }
 }

@@ -20,8 +20,8 @@
  *          OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *          SOFTWARE.
  */
-namespace Xinc\Monitor;
 
+namespace Xinc\Monitor;
 
 use Xinc\Monitor\Directory\FilterIterator as Filter;
 use Xinc\Monitor\MonitoredInterface as Monitored;
@@ -37,7 +37,7 @@ class Dir implements Monitored
     {
         $this->ls = array();
         $this->ignore = array();
-        if($path !== null) {
+        if ($path !== null) {
             $this->setPath($path);
             $this->initialize();
         }
@@ -50,20 +50,22 @@ class Dir implements Monitored
 
     public function setPath($path)
     {
-        if($this->path === null) {
-            if(is_dir($path)) {
+        if ($this->path === null) {
+            if (is_dir($path)) {
                 $this->path = $path;
+
                 return $this;
             }
             throw new \Xinc\Monitor\Exception("Directory path '$path' not found.");
         }
-        throw new \Xinc\Monitor\Exception("Path attribute is not changeable.");
+        throw new \Xinc\Monitor\Exception('Path attribute is not changeable.');
     }
 
     public function getIterator()
     {
         $i = new Filter(new \DirectoryIterator($this->getPath()));
         $i->rewind();
+
         return $i;
     }
 
@@ -73,7 +75,7 @@ class Dir implements Monitored
         $this->isChanged = false;
         $iter = $this->getIterator();
 
-        while($iter->valid()) {
+        while ($iter->valid()) {
             $this->setupEntry($iter);
             $iter->next();
         }
@@ -81,11 +83,10 @@ class Dir implements Monitored
 
     protected function setupEntry($iter)
     {
-        if($iter->isFile()) {
+        if ($iter->isFile()) {
             $this->ls[$iter->getPathname()] = new File($iter->getPathname());
-        }
-        elseif($iter->isDir()) {
-            $this->ls[$iter->getPathname()] = new Dir($iter->getPathname());
+        } elseif ($iter->isDir()) {
+            $this->ls[$iter->getPathname()] = new self($iter->getPathname());
         }
     }
 
@@ -97,26 +98,26 @@ class Dir implements Monitored
         $this->isChanged = false;
         $check = array();
         $iter = $this->getIterator();
-        while($iter->valid()) {
+        while ($iter->valid()) {
             $check[] = $iter->getPathname();
-            if(isset($this->ls[$iter->getPathname()])) {
-                if($this->ls[$iter->getPathname()]->check()) {
+            if (isset($this->ls[$iter->getPathname()])) {
+                if ($this->ls[$iter->getPathname()]->check()) {
                     $this->isChanged = true;
                 }
-            }
-            else {
+            } else {
                 $this->setupEntry($iter);
                 $this->isChanged = true;
             }
             $iter->next();
         }
-        $deleted = array_diff(array_keys($this->ls),$check);
-        if(count($deleted) > 0) {
+        $deleted = array_diff(array_keys($this->ls), $check);
+        if (count($deleted) > 0) {
             $this->isChanged = true;
-            foreach($deleted as $entry) {
+            foreach ($deleted as $entry) {
                 unset($this->ls[$entry]);
             }
         }
+
         return $this->isChanged;
     }
 

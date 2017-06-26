@@ -20,6 +20,7 @@
  *          OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *          SOFTWARE.
  */
+
 namespace Xinc\Monitor;
 
 use Xinc\Monitor\MonitoredInterface as Monitored;
@@ -34,7 +35,7 @@ class File implements Monitored
 
     public function __construct($path = null)
     {
-        if($path !== null) {
+        if ($path !== null) {
             $this->setPath($path);
             $this->initialize();
         }
@@ -47,24 +48,24 @@ class File implements Monitored
 
     public function setPath($path)
     {
-        if($this->path === null) {
+        if ($this->path === null) {
             $this->path = $path;
+
             return $this;
         }
-        throw new \Xinc\Monitor\Exception("Path attribute is not changeable.");
+        throw new \Xinc\Monitor\Exception('Path attribute is not changeable.');
     }
 
     public function initialize()
     {
         $this->isChanged = false;
-        if(file_exists($this->getPath()) === FALSE) {
+        if (file_exists($this->getPath()) === false) {
             $this->exists = false;
             $this->mtime = null;
             $this->size = null;
-        }
-        else {
+        } else {
             $stat = stat($this->getPath());
-            if($stat === false) {
+            if ($stat === false) {
                 throw new \Xinc\Monitor\Exception(
                     "Problem stat '{$this->getPath()}'.");
             }
@@ -79,29 +80,28 @@ class File implements Monitored
      */
     public function check()
     {
-        if(!$this->exists()) {
-            if(file_exists($this->getPath())) {
+        if (!$this->exists()) {
+            if (file_exists($this->getPath())) {
                 $this->exists = true;
                 $this->isChanged = true;
-            }
-            else {
+            } else {
                 return false;
             }
         }
         $stat = stat($this->getPath());
-        if($stat === false) {
+        if ($stat === false) {
             throw new Xinc\Monitor\Exception(
                 "Problem stat '{$this->getPath()}'.");
         }
-        if($this->mtime != $stat['mtime'] ||
+        if ($this->mtime != $stat['mtime'] ||
            $this->size != $stat['size']) {
             $this->isChanged = true;
             $this->mtime = $stat['mtime'];
             $this->size = $stat['size'];
-        }
-        else {
+        } else {
             $this->isChanged = false;
         }
+
         return $this->isChanged;
     }
 

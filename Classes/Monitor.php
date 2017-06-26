@@ -21,6 +21,7 @@
  *          OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *          SOFTWARE.
  */
+
 namespace Xinc\Monitor;
 
 use Xinc\Monitor\MonitoredInterface as Monitored;
@@ -31,12 +32,12 @@ use Xinc\Monitor\MonitoredInterface as Monitored;
 class Monitor implements Monitored
 {
     /**
-     * holds the monitored items
+     * holds the monitored items.
      */
     protected $monitored;
 
     /**
-     * boolean - the current change status
+     * boolean - the current change status.
      */
     protected $isChanged;
 
@@ -53,11 +54,12 @@ class Monitor implements Monitored
     public function check()
     {
         $this->isChanged = false;
-        foreach($this->monitored as $item) {
-            if($item->check()) {
+        foreach ($this->monitored as $item) {
+            if ($item->check()) {
                 $this->isChanged = true;
             }
         }
+
         return $this->isChanged;
     }
 

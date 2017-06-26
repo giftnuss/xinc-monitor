@@ -20,18 +20,21 @@
  *          OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *          SOFTWARE.
  */
+
 namespace Xinc\Monitor;
 
 interface MonitoredInterface
 {
     /**
      * Check a monitored item.
+     *
      * @returns boolean - is it changed
      */
     public function check();
 
     /**
-     * Return the current change status
+     * Return the current change status.
+     *
      * @returns boolean - is it changend
      */
     public function isChanged();
