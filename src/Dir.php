@@ -86,7 +86,7 @@ class Dir implements Monitored
         if ($iter->isFile()) {
             $this->ls[$iter->getPathname()] = new File($iter->getPathname());
         } elseif ($iter->isDir()) {
-            $this->ls[$iter->getPathname()] = new self($iter->getPathname());
+            $this->ls[$iter->getPathname()] = new static($iter->getPathname());
         }
     }
 

@@ -26,7 +26,6 @@ class DirTest extends \PHPUnit_Framework_TestCase
                 RecursiveIteratorIterator::CHILD_FIRST);
             foreach($it as $item) {
                 if($item->getFilename() !== '.' && $item->getFilename() !== '..') {
-                    echo $item->getPathname(),"\n";
                     if($item->isDir()) {
                         rmdir($item->getPathname());
                     }
@@ -118,4 +117,36 @@ class DirTest extends \PHPUnit_Framework_TestCase
         $low->check();
         $this->assertTrue($low->isChanged());
     }
+    
+    public function testRecursiveDir()
+    {
+		$del = __DIR__ . '/data/recursive/two/del.txt';
+		touch($del);
+		$low = new Dir(__DIR__.'/data/recursive');
+		$update = $low->getPath() . '/two/bla2.txt';
+		touch($update);
+		clearstatcache();
+		$low->check();
+		$this->assertTrue($low->isChanged(),"touch existing file");
+		
+		$low->check();
+		$this->assertFalse($low->isChanged());
+		
+		$update2 = $low->getPath() . '/one/new.txt';
+		$this->assertTrue(touch($update2),"touch new file");
+		clearstatcache();
+		$low->check();
+		$this->assertTrue($low->isChanged(),"create new file");
+		
+		$low->check();
+		$this->assertFalse($low->isChanged());
+		
+		$this->assertTrue(unlink($del),"delete file");
+		clearstatcache();
+		$low->check();
+		$this->assertTrue($low->isChanged(),"file deleted");
+		
+		$low->check();
+		$this->assertFalse($low->isChanged());
+	}
 }
